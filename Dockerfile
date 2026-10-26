@@ -24,12 +24,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy API backend code and install
+# Copy API backend code
 COPY apps/api /app/apps/api
-RUN pip install --no-cache-dir --no-deps -e /app/apps/api
 
 # Copy the built frontend from Stage 1
 COPY --from=frontend-builder /app/apps/web/dist /app/apps/web/dist
+
+# Set Python path so nlp_wisper_api is directly importable
+ENV PYTHONPATH="/app/apps/api/src"
 
 # Default cloud environment variables
 ENV HOST=0.0.0.0
