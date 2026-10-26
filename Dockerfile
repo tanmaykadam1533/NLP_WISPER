@@ -1,21 +1,14 @@
 # --- Stage 1: Build Frontend ---
 FROM node:20-slim AS frontend-builder
-WORKDIR /app
+WORKDIR /app/apps/web
 
-# Enable pnpm
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+# Copy web package files and install dependencies
+COPY apps/web/package*.json ./
+RUN npm ci || npm install
 
-# Copy workspace configuration files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/web/package.json ./apps/web/
-
-RUN pnpm install --frozen-lockfile
-
-# Copy frontend source code and build
-COPY apps/web ./apps/web
-RUN pnpm --filter web build
+# Copy web source and build
+COPY apps/web ./
+RUN npm run build
 
 # --- Stage 2: Python Backend & Final Image ---
 FROM python:3.11-slim
@@ -27,12 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Install python dependencies
-RUN pip install --no-cache-dir \
-    "fastapi>=0.115" \
-    "uvicorn[standard]>=0.30" \
-    "faster-whisper>=1.0.0" \
-    "numpy"
+# Copy requirements and install Python dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy API backend code and install
 COPY apps/api /app/apps/api
