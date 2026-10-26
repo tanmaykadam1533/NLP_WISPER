@@ -92,7 +92,9 @@ if WEB_DIST.is_dir():
 
 
 def run() -> None:
-    uvicorn.run("nlp_wisper_api.main:app", host="127.0.0.1", port=int(os.getenv("API_PORT", "8000")))
+    port = int(os.getenv("PORT", os.getenv("API_PORT", "8000")))
+    host = os.getenv("HOST", "0.0.0.0")
+    uvicorn.run("nlp_wisper_api.main:app", host=host, port=port)
 
 
 if __name__ == "__main__":

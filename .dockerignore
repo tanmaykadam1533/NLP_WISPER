@@ -1,0 +1,11 @@
+.git
+.venv
+__pycache__
+*.pyc
+node_modules
+dist
+.turbo
+.ruff_cache
+*.zip
+*.wav
+.DS_Store
