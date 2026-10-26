@@ -1,0 +1,25 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "futureFlags": {
+    "experimentalPythonWorkspaces": true,
+    "experimentalTaskCommand": true
+  },
+  "ui": "stream",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "lint": {},
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "nlp-wisper-api#dev": {
+      "command": ["uv", "run", "--frozen", "--package", "nlp-wisper-api", "nlp-wisper-api"],
+      "env": ["WHISPER_MODEL", "WHISPER_LANGUAGE", "VAD_THRESHOLD", "API_PORT", "LOG_LEVEL"],
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

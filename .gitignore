@@ -1,0 +1,9 @@
+node_modules/
+.turbo/
+dist/
+.venv/
+__pycache__/
+*.pyc
+.ruff_cache/
+.DS_Store
+*.zip

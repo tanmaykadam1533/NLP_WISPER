@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-theme="serika_dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nlp-wisper</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="8.5" y="2.5" width="7" height="12" rx="3.5" />
+            <path d="M5 11a7 7 0 0 0 14 0M12 18v3.5M8.5 21.5h7" />
+          </svg>
+          <div class="logo-text"><span class="logo-top">speak see</span>nlp-wisper</div>
+        </div>
+        <div class="conn" id="conn" data-state="connecting">
+          <span class="dot"></span><span id="conn-text">connecting</span>
+        </div>
+      </header>
+
+      <nav class="config">
+        <div class="group"><span class="label">model</span><span class="value" id="cfg-model">—</span></div>
+        <span class="sep"></span>
+        <div class="group"><span class="label">lang</span><span class="value" id="cfg-lang">—</span></div>
+        <span class="sep"></span>
+        <div class="group" id="themes"></div>
+      </nav>
+
+      <main>
+        <section id="test">
+          <div class="live" id="live">
+            <span class="rec"></span>
+            <span><b id="live-time">0:00</b></span>
+            <span><b id="live-wpm">0</b> wpm</span>
+            <span><b id="live-words">0</b> words</span>
+          </div>
+          <div class="words-wrap" id="words-wrap">
+            <div class="placeholder" id="placeholder">press space and start talking — your words will appear here as you speak</div>
+            <div class="words" id="words"><span class="probe" id="probe">&#8203;</span><span class="caret blink" id="caret"></span></div>
+          </div>
+          <div class="level"><div class="level-bar" id="level-bar"></div></div>
+          <button class="icon-btn" id="restart" title="reset (esc)" aria-label="reset">
+            <svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.34 5.66M20 4v7h-7" /></svg>
+          </button>
+          <p class="error" id="error" hidden></p>
+        </section>
+
+        <section id="result" hidden>
+          <div class="result-top">
+            <div class="big-stats">
+              <div><div class="label">wpm</div><div class="big" id="r-wpm">0</div></div>
+              <div><div class="label">time</div><div class="big" id="r-time">0:00</div></div>
+            </div>
+            <svg class="chart" id="chart" preserveAspectRatio="none"></svg>
+          </div>
+          <div class="small-stats">
+            <div><div class="label">words</div><div class="val" id="r-words">0</div></div>
+            <div><div class="label">characters</div><div class="val" id="r-chars">0</div></div>
+            <div><div class="label">utterances</div><div class="val" id="r-utts">0</div></div>
+            <div><div class="label">avg latency</div><div class="val" id="r-latency">—</div></div>
+            <div><div class="label">model</div><div class="val" id="r-model">—</div></div>
+          </div>
+          <p class="transcript" id="r-text"></p>
+          <div class="actions">
+            <button class="icon-btn" id="copy" title="copy transcript">
+              <svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" /></svg>
+            </button>
+            <button class="icon-btn" id="again" title="next (space)">
+              <svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" /></svg>
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <div class="hints">
+          <span><kbd>space</kbd> start / stop</span>
+          <span><kbd>esc</kbd> reset</span>
+        </div>
+        <div class="meta">runs 100% locally · whisper on mlx</div>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

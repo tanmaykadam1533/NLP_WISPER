@@ -1,0 +1,503 @@
+/* Palettes borrowed from Monkeytype's themes. */
+:root,
+[data-theme="serika_dark"] {
+  --bg: #323437;
+  --main: #e2b714;
+  --caret: #e2b714;
+  --sub: #646669;
+  --sub-alt: #2c2e31;
+  --text: #d1d0c5;
+  --error: #ca4754;
+}
+[data-theme="nord"] {
+  --bg: #242933;
+  --main: #88c0d0;
+  --caret: #d8dee9;
+  --sub: #617b94;
+  --sub-alt: #1d2128;
+  --text: #d8dee9;
+  --error: #bf616a;
+}
+[data-theme="dracula"] {
+  --bg: #282a36;
+  --main: #bd93f9;
+  --caret: #f8f8f2;
+  --sub: #6272a4;
+  --sub-alt: #20222c;
+  --text: #f8f8f2;
+  --error: #ff5555;
+}
+[data-theme="carbon"] {
+  --bg: #313131;
+  --main: #f66e0d;
+  --caret: #f66e0d;
+  --sub: #616161;
+  --sub-alt: #2b2b2b;
+  --text: #f5e6c8;
+  --error: #e72d2d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  transition: background 0.25s, color 0.25s;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+#app {
+  min-height: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 1.5rem;
+}
+
+/* ---------- header ---------- */
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+}
+
+.logo-icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  fill: none;
+  stroke: var(--main);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.logo-text {
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+  position: relative;
+  letter-spacing: -0.02em;
+}
+
+.logo-top {
+  position: absolute;
+  top: -0.65em;
+  left: 0.1em;
+  font-size: 0.32em;
+  color: var(--sub);
+  letter-spacing: 0;
+}
+
+body[data-state="listening"] .logo-text,
+body[data-state="stopping"] .logo-text {
+  color: var(--sub);
+}
+
+.conn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--sub);
+}
+
+.conn .dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--sub);
+}
+
+.conn[data-state="ready"] .dot {
+  background: var(--main);
+}
+
+.conn[data-state="offline"] .dot {
+  background: var(--error);
+}
+
+.conn[data-state="connecting"] .dot {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* ---------- config bar ---------- */
+
+.config {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.55rem 1.2rem;
+  border-radius: 0.5rem;
+  background: var(--sub-alt);
+  font-size: 0.8rem;
+  color: var(--sub);
+  transition: opacity 0.2s;
+}
+
+body[data-state="listening"] .config,
+body[data-state="stopping"] .config {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.config .group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.config .value {
+  color: var(--main);
+}
+
+.config .sep {
+  width: 0.25rem;
+  height: 1.2rem;
+  border-radius: 1rem;
+  background: var(--bg);
+}
+
+#themes button {
+  color: var(--sub);
+  padding: 0 0.15rem;
+  transition: color 0.15s;
+}
+
+#themes button:hover {
+  color: var(--text);
+}
+
+#themes button.active {
+  color: var(--main);
+}
+
+/* ---------- typing area ---------- */
+
+main {
+  display: grid;
+  align-content: center;
+}
+
+#test {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.live {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: 2rem;
+  font-size: 1rem;
+  color: var(--sub);
+  visibility: hidden;
+}
+
+.live b {
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: var(--main);
+}
+
+body[data-state="listening"] .live,
+body[data-state="stopping"] .live {
+  visibility: visible;
+}
+
+.rec {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--error);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+body[data-state="stopping"] .rec {
+  background: var(--sub);
+  animation: none;
+}
+
+.words-wrap {
+  position: relative;
+  font-size: 1.75rem;
+  line-height: 1.6;
+  height: calc(3 * 1.6em);
+  overflow: hidden;
+  cursor: text;
+}
+
+.words {
+  position: relative;
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: break-word;
+  transition: transform 0.15s ease;
+}
+
+.words .final {
+  color: var(--text);
+}
+
+.words .partial {
+  color: color-mix(in srgb, var(--text) 55%, var(--sub));
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  color: var(--sub);
+  pointer-events: none;
+  padding-left: 0.1em;
+}
+
+body:not([data-state="idle"]) .placeholder {
+  display: none;
+}
+
+.caret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0.12em;
+  height: 1.2em;
+  margin-top: 0.05em;
+  border-radius: 0.1em;
+  background: var(--caret);
+  transition: transform 0.09s ease-out;
+}
+
+.caret.blink,
+body[data-state="idle"] .caret {
+  animation: blink 1s step-end infinite;
+}
+
+body[data-state="listening"] .caret {
+  animation: none;
+}
+
+.probe {
+  display: inline-block;
+  width: 0;
+}
+
+.level {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--sub-alt);
+  overflow: hidden;
+}
+
+.level-bar {
+  height: 100%;
+  background: var(--main);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.08s linear;
+}
+
+.icon-btn {
+  justify-self: center;
+  width: 3rem;
+  height: 3rem;
+  margin-top: 1.2rem;
+  border-radius: 0.5rem;
+  color: var(--sub);
+  transition: color 0.15s, background 0.15s;
+}
+
+.icon-btn:hover {
+  color: var(--text);
+}
+
+.icon-btn:focus-visible {
+  outline: none;
+  background: var(--text);
+  color: var(--bg);
+}
+
+.icon-btn svg {
+  width: 1.3rem;
+  height: 1.3rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-btn.done {
+  color: var(--main);
+}
+
+.error {
+  justify-self: center;
+  margin: 0;
+  color: var(--error);
+  font-size: 0.9rem;
+}
+
+/* ---------- result ---------- */
+
+#result {
+  display: grid;
+  gap: 2rem;
+  animation: fade-in 0.25s ease;
+}
+
+.result-top {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+#result .label {
+  font-size: 1.1rem;
+  color: var(--sub);
+}
+
+.big {
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--main);
+}
+
+.big-stats {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.chart {
+  width: 100%;
+  height: 200px;
+  overflow: visible;
+}
+
+.chart .grid {
+  stroke: var(--sub-alt);
+  stroke-width: 1;
+}
+
+.chart .axis {
+  fill: var(--sub);
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.chart .line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.chart .wpm {
+  stroke: var(--main);
+}
+
+.chart .raw {
+  stroke: var(--sub);
+}
+
+.small-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+}
+
+.small-stats .label {
+  font-size: 0.9rem;
+}
+
+.small-stats .val {
+  font-size: 1.8rem;
+  color: var(--main);
+}
+
+.transcript {
+  margin: 0;
+  max-height: 9.6em;
+  overflow-y: auto;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.actions .icon-btn {
+  margin: 0;
+}
+
+/* ---------- footer ---------- */
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--sub);
+}
+
+.hints {
+  display: flex;
+  gap: 1.5rem;
+}
+
+kbd {
+  font-family: inherit;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  margin-right: 0.35rem;
+  border-radius: 0.25rem;
+  background: var(--sub);
+  color: var(--bg);
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
